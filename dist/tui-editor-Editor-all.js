@@ -20531,8 +20531,9 @@ var WwListManager = function () {
         return html;
       });
 
-      this.eventManager.listen('convertorAfterHtmlToMarkdownConverted'
-      /*markdown => markdown.replace(/:BLANK_LINE:\n/g, '')*/);
+      this.eventManager.listen('convertorAfterHtmlToMarkdownConverted', function (markdown) {
+        // Do nothing
+      });
     }
   }, {
     key: '_initKeyHandler',

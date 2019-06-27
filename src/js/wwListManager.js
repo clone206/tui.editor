@@ -69,8 +69,9 @@ class WwListManager {
       return html;
     });
 
-    this.eventManager.listen('convertorAfterHtmlToMarkdownConverted',
-      /*markdown => markdown.replace(/:BLANK_LINE:\n/g, '')*/);
+    this.eventManager.listen('convertorAfterHtmlToMarkdownConverted', (markdown) => {
+      // Do nothing
+    });
   }
 
   _initKeyHandler() {
