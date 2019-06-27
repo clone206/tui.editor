@@ -63,14 +63,14 @@ class WwListManager {
     });
 
     this.eventManager.listen('wysiwygProcessHTMLText', html => {
-      html = this._insertBlankToBetweenSameList(html);
+      //html = this._insertBlankToBetweenSameList(html);
       html = this._convertFromArbitraryNestingList(html);
 
       return html;
     });
 
     this.eventManager.listen('convertorAfterHtmlToMarkdownConverted',
-      markdown => markdown.replace(/:BLANK_LINE:\n/g, ''));
+      /*markdown => markdown.replace(/:BLANK_LINE:\n/g, '')*/);
   }
 
   _initKeyHandler() {

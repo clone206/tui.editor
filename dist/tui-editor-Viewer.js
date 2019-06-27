@@ -163,10 +163,10 @@ var MarkdownPreview = function (_Preview) {
       var latestMarkdownValue = '';
 
       this.eventManager.listen('contentChangedFromMarkdown', function (markdownEditor) {
-        latestMarkdownValue = markdownEditor.getValue();
+        latestMarkdownValue = markdownEditor.getValue(); // KW: Removed code stripping newlines from <br> tags
 
         if (_this2.isVisible()) {
-          _this2.lazyRunner.run('refresh', latestMarkdownValue.replace(/<br>\n/g, '<br>'));
+          _this2.lazyRunner.run('refresh', latestMarkdownValue);
         }
       });
 
@@ -283,6 +283,10 @@ var Preview = function () {
     key: 'refresh',
     value: function refresh(markdown) {
       this.render(this.convertor.toHTMLWithCodeHightlight(markdown));
+      // KW:
+      if (typeof SyntaxHighlighter !== 'undefined') {
+        SyntaxHighlighter.highlight();
+      }
     }
 
     /**
@@ -982,7 +986,10 @@ var markdownit = new _markdownIt2.default({
 });
 
 // markdownitHighlight
-markdownitHighlight.block.ruler.at('code', _markdownitCodeRenderer2.default);
+// KW: Allowing code blocks to interrupt paras below.
+markdownitHighlight.block.ruler.at('code', _markdownitCodeRenderer2.default, {
+  alt: ['paragraph']
+});
 markdownitHighlight.block.ruler.at('table', _markdownitTableRenderer2.default, {
   alt: ['paragraph', 'reference']
 });
@@ -997,7 +1004,9 @@ markdownitHighlight.use(_markdownitTaskPlugin2.default);
 markdownitHighlight.use(_markdownitCodeBlockPlugin2.default);
 
 // markdownit
-markdownit.block.ruler.at('code', _markdownitCodeRenderer2.default);
+markdownit.block.ruler.at('code', _markdownitCodeRenderer2.default, {
+  alt: ['paragraph']
+});
 markdownit.block.ruler.at('table', _markdownitTableRenderer2.default, {
   alt: ['paragraph', 'reference']
 });
@@ -1215,12 +1224,18 @@ var Convertor = function () {
      * @returns {markdownit} - markdownit instance
      * @memberof Convertor
      * @static
+        KW: Added getMarkdownitRenderer accessor
      */
 
   }], [{
     key: 'getMarkdownitHighlightRenderer',
     value: function getMarkdownitHighlightRenderer() {
       return markdownitHighlight;
+    }
+  }, {
+    key: 'getMarkdownitRenderer',
+    value: function getMarkdownitRenderer() {
+      return markdownit;
     }
   }]);
 
@@ -1951,8 +1966,9 @@ module.exports = MarkdownitCodeBlockRenderer;
  * @modifier NHN Ent. FE Development Lab <dl_javascript@nhnent.com>
  */
 
+// KW: Allowing the silent param here so code blocks can interrupt paras
 /* eslint-disable */
-module.exports = function code(state, startLine, endLine /*, silent*/) {
+module.exports = function code(state, startLine, endLine, silent) {
     // Added by Junghwan Park
     var FIND_LIST_RX = / {0,3}(?:-|\*|\d\.) /;
     var lines = state.src.split('\n');
@@ -1968,6 +1984,11 @@ module.exports = function code(state, startLine, endLine /*, silent*/) {
     if (currentLine.match(FIND_LIST_RX) || state.sCount[startLine] - state.blkIndent < 4) {
         // Add condition by Junghwan Park
         return false;
+    }
+
+    // KW If we're interrupting an element here, don't bother pushing the token
+    if (silent) {
+        return true;
     }
 
     last = nextLine = startLine + 1;
@@ -3571,6 +3592,12 @@ ToastUIEditorViewer.codeBlockManager = _codeBlockManager2.default;
  * @type {MarkdownIt}
  */
 ToastUIEditorViewer.markdownitHighlight = _convertor2.default.getMarkdownitHighlightRenderer();
+
+/**
+ * MarkdownIt instance
+ * @type {MarkdownIt}
+ */
+ToastUIEditorViewer.markdownit = _convertor2.default.getMarkdownitRenderer();
 
 /**
  * @ignore

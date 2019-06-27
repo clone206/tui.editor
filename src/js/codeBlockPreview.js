@@ -35,13 +35,16 @@ class CodeBlockPreview extends Preview {
    * refresh preview
    * @memberof CodeBlockPreview
    * @override
+   * KW: Updating to use roadkill-style codeblocks
    */
   refresh() {
     const language = this._codeBlockEditor.getLanguage();
     const codeText = this._codeBlockEditor.getEditorCodeText();
 
-    super.refresh(`\`\`\`${language}\n${codeText}\n\`\`\``);
+    super.refresh(`[[[code lang=${language}|\n${codeText}\n]]]`);
     this.$el.trigger(EVENT_REQUIRE_SCROLL_SYNC);
+        // KW: using roadkill's syntax highlighter instead of codemirror's default
+        SyntaxHighlighter.highlight();
   }
 
   /**

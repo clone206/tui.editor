@@ -131,6 +131,9 @@ class PopupCodeBlockEditor extends LayerPopup {
       this.eventManager.emit('closeAllPopup');
       this.show(codeBlockElement);
 
+          // KW: Initializing the popup editor with the roadkill highlighter
+          SyntaxHighlighter.highlight();
+
       return this;
     });
     this.eventManager.listen('closeAllPopup', this.hide.bind(this));

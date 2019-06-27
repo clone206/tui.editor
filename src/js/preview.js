@@ -52,6 +52,10 @@ class Preview {
    */
   refresh(markdown) {
     this.render(this.convertor.toHTMLWithCodeHightlight(markdown));
+            // KW:
+        if (typeof SyntaxHighlighter !== 'undefined') {
+            SyntaxHighlighter.highlight();
+        }
   }
 
   /**

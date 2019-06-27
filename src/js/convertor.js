@@ -34,7 +34,10 @@ const markdownit = new MarkdownIt({
 });
 
 // markdownitHighlight
-markdownitHighlight.block.ruler.at('code', code);
+// KW: Allowing code blocks to interrupt paras below.
+markdownitHighlight.block.ruler.at('code', code, {
+  alt: [ 'paragraph' ]
+});
 markdownitHighlight.block.ruler.at('table', tableRenderer, {
   alt: ['paragraph', 'reference']
 });
@@ -49,7 +52,9 @@ markdownitHighlight.use(taskList);
 markdownitHighlight.use(codeBlock);
 
 // markdownit
-markdownit.block.ruler.at('code', code);
+markdownit.block.ruler.at('code', code, {
+  alt: [ 'paragraph' ]
+});
 markdownit.block.ruler.at('table', tableRenderer, {
   alt: ['paragraph', 'reference']
 });
@@ -241,9 +246,14 @@ class Convertor {
    * @returns {markdownit} - markdownit instance
    * @memberof Convertor
    * @static
+      KW: Added getMarkdownitRenderer accessor
    */
   static getMarkdownitHighlightRenderer() {
     return markdownitHighlight;
+  }
+
+  static getMarkdownitRenderer() {
+    return markdownit;
   }
 }
 

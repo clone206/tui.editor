@@ -31,10 +31,10 @@ class MarkdownPreview extends Preview {
     let latestMarkdownValue = '';
 
     this.eventManager.listen('contentChangedFromMarkdown', markdownEditor => {
-      latestMarkdownValue = markdownEditor.getValue();
+      latestMarkdownValue = markdownEditor.getValue(); // KW: Removed code stripping newlines from <br> tags
 
       if (this.isVisible()) {
-        this.lazyRunner.run('refresh', latestMarkdownValue.replace(/<br>\n/g, '<br>'));
+        this.lazyRunner.run('refresh', latestMarkdownValue);
       }
     });
 

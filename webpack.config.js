@@ -61,7 +61,8 @@ const defaultConfigs = Array(isDevServer ? 1 : 4).fill(0).map(() => {
         options: {
           configFile: './.eslintrc',
           failOnWarning: false,
-          failOnError: false
+          failOnError: false,
+          emitWarning: true
         }
       },
       {

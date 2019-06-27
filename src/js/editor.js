@@ -849,4 +849,10 @@ ToastUIEditor.CommandManager = CommandManager;
  */
 ToastUIEditor.markdownitHighlight = Convertor.getMarkdownitHighlightRenderer();
 
+/**
+ * MarkdownIt instance
+ * @type {MarkdownIt}
+ */
+ToastUIEditor.markdownit = Convertor.getMarkdownitRenderer();
+
 module.exports = ToastUIEditor;

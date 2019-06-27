@@ -6429,6 +6429,12 @@ ToastUIEditor.CommandManager = _commandManager3.default;
  */
 ToastUIEditor.markdownitHighlight = _convertor2.default.getMarkdownitHighlightRenderer();
 
+/**
+ * MarkdownIt instance
+ * @type {MarkdownIt}
+ */
+ToastUIEditor.markdownit = _convertor2.default.getMarkdownitRenderer();
+
 module.exports = ToastUIEditor;
 
 /***/ }),
@@ -7111,10 +7117,10 @@ var MarkdownPreview = function (_Preview) {
       var latestMarkdownValue = '';
 
       this.eventManager.listen('contentChangedFromMarkdown', function (markdownEditor) {
-        latestMarkdownValue = markdownEditor.getValue();
+        latestMarkdownValue = markdownEditor.getValue(); // KW: Removed code stripping newlines from <br> tags
 
         if (_this2.isVisible()) {
-          _this2.lazyRunner.run('refresh', latestMarkdownValue.replace(/<br>\n/g, '<br>'));
+          _this2.lazyRunner.run('refresh', latestMarkdownValue);
         }
       });
 
@@ -7230,6 +7236,10 @@ var Preview = function () {
     key: 'refresh',
     value: function refresh(markdown) {
       this.render(this.convertor.toHTMLWithCodeHightlight(markdown));
+      // KW:
+      if (typeof SyntaxHighlighter !== 'undefined') {
+        SyntaxHighlighter.highlight();
+      }
     }
 
     /**
@@ -10172,7 +10182,10 @@ var markdownit = new _markdownIt2.default({
 });
 
 // markdownitHighlight
-markdownitHighlight.block.ruler.at('code', _markdownitCodeRenderer2.default);
+// KW: Allowing code blocks to interrupt paras below.
+markdownitHighlight.block.ruler.at('code', _markdownitCodeRenderer2.default, {
+  alt: ['paragraph']
+});
 markdownitHighlight.block.ruler.at('table', _markdownitTableRenderer2.default, {
   alt: ['paragraph', 'reference']
 });
@@ -10187,7 +10200,9 @@ markdownitHighlight.use(_markdownitTaskPlugin2.default);
 markdownitHighlight.use(_markdownitCodeBlockPlugin2.default);
 
 // markdownit
-markdownit.block.ruler.at('code', _markdownitCodeRenderer2.default);
+markdownit.block.ruler.at('code', _markdownitCodeRenderer2.default, {
+  alt: ['paragraph']
+});
 markdownit.block.ruler.at('table', _markdownitTableRenderer2.default, {
   alt: ['paragraph', 'reference']
 });
@@ -10405,12 +10420,18 @@ var Convertor = function () {
      * @returns {markdownit} - markdownit instance
      * @memberof Convertor
      * @static
+        KW: Added getMarkdownitRenderer accessor
      */
 
   }], [{
     key: 'getMarkdownitHighlightRenderer',
     value: function getMarkdownitHighlightRenderer() {
       return markdownitHighlight;
+    }
+  }, {
+    key: 'getMarkdownitRenderer',
+    value: function getMarkdownitRenderer() {
+      return markdownit;
     }
   }]);
 
@@ -15654,6 +15675,8 @@ var MarkdownEditor = function (_CodeMirrorExt) {
       this.cm.on('change', function (cm, cmEvent) {
         _this2._emitMarkdownEditorContentChangedEvent();
         _this2._emitMarkdownEditorChangeEvent(cmEvent);
+        // KW: refreshing roadkill syntax highlighting
+        SyntaxHighlighter.highlight();
       });
 
       this.cm.on('focus', function () {
@@ -20502,15 +20525,14 @@ var WwListManager = function () {
       });
 
       this.eventManager.listen('wysiwygProcessHTMLText', function (html) {
-        html = _this._insertBlankToBetweenSameList(html);
+        //html = this._insertBlankToBetweenSameList(html);
         html = _this._convertFromArbitraryNestingList(html);
 
         return html;
       });
 
-      this.eventManager.listen('convertorAfterHtmlToMarkdownConverted', function (markdown) {
-        return markdown.replace(/:BLANK_LINE:\n/g, '');
-      });
+      this.eventManager.listen('convertorAfterHtmlToMarkdownConverted'
+      /*markdown => markdown.replace(/:BLANK_LINE:\n/g, '')*/);
     }
   }, {
     key: '_initKeyHandler',
@@ -23497,8 +23519,9 @@ module.exports = MarkdownitCodeBlockRenderer;
  * @modifier NHN Ent. FE Development Lab <dl_javascript@nhnent.com>
  */
 
+// KW: Allowing the silent param here so code blocks can interrupt paras
 /* eslint-disable */
-module.exports = function code(state, startLine, endLine /*, silent*/) {
+module.exports = function code(state, startLine, endLine, silent) {
     // Added by Junghwan Park
     var FIND_LIST_RX = / {0,3}(?:-|\*|\d\.) /;
     var lines = state.src.split('\n');
@@ -23514,6 +23537,11 @@ module.exports = function code(state, startLine, endLine /*, silent*/) {
     if (currentLine.match(FIND_LIST_RX) || state.sCount[startLine] - state.blkIndent < 4) {
         // Add condition by Junghwan Park
         return false;
+    }
+
+    // KW If we're interrupting an element here, don't bother pushing the token
+    if (silent) {
+        return true;
     }
 
     last = nextLine = startLine + 1;
@@ -24572,6 +24600,12 @@ ToastUIEditorViewer.codeBlockManager = _codeBlockManager2.default;
  * @type {MarkdownIt}
  */
 ToastUIEditorViewer.markdownitHighlight = _convertor2.default.getMarkdownitHighlightRenderer();
+
+/**
+ * MarkdownIt instance
+ * @type {MarkdownIt}
+ */
+ToastUIEditorViewer.markdownit = _convertor2.default.getMarkdownitRenderer();
 
 /**
  * @ignore
@@ -28016,7 +28050,8 @@ var PopupAddHeading = function (_LayerPopup) {
   function PopupAddHeading(options) {
     _classCallCheck(this, PopupAddHeading);
 
-    var POPUP_CONTENT = '\n            <ul>\n                <li data-value="1" data-type="Heading"><h1>' + _i18n2.default.get('Heading') + ' 1</h1></li>\n                <li data-value="2" data-type="Heading"><h2>' + _i18n2.default.get('Heading') + ' 2</h2></li>\n                <li data-value="3" data-type="Heading"><h3>' + _i18n2.default.get('Heading') + ' 3</h3></li>\n                <li data-value="4" data-type="Heading"><h4>' + _i18n2.default.get('Heading') + ' 4</h4></li>\n                <li data-value="5" data-type="Heading"><h5>' + _i18n2.default.get('Heading') + ' 5</h5></li>\n                <li data-value="6" data-type="Heading"><h6>' + _i18n2.default.get('Heading') + ' 6</h6></li>\n                <li data-type="Paragraph"><div>' + _i18n2.default.get('Paragraph') + '</div></li>\n            </ul>\n        ';
+    // KW: Removed H1 from drop-down as that is reserved for the title of the page in roadkill
+    var POPUP_CONTENT = '\n            <ul>\n                <li data-value="2" data-type="Heading"><h2>' + _i18n2.default.get('Heading') + ' 2</h2></li>\n                <li data-value="3" data-type="Heading"><h3>' + _i18n2.default.get('Heading') + ' 3</h3></li>\n                <li data-value="4" data-type="Heading"><h4>' + _i18n2.default.get('Heading') + ' 4</h4></li>\n                <li data-value="5" data-type="Heading"><h5>' + _i18n2.default.get('Heading') + ' 5</h5></li>\n                <li data-value="6" data-type="Heading"><h6>' + _i18n2.default.get('Heading') + ' 6</h6></li>\n                <li data-type="Paragraph"><div>' + _i18n2.default.get('Paragraph') + '</div></li>\n            </ul>\n        ';
     options = _tuiCodeSnippet2.default.extend({
       header: false,
       className: 'te-heading-add',
@@ -28603,6 +28638,9 @@ var PopupCodeBlockEditor = function (_LayerPopup) {
       this.eventManager.listen('openPopupCodeBlockEditor', function (codeBlockElement) {
         _this3.eventManager.emit('closeAllPopup');
         _this3.show(codeBlockElement);
+
+        // KW: Initializing the popup editor with the roadkill highlighter
+        SyntaxHighlighter.highlight();
 
         return _this3;
       });
@@ -29304,6 +29342,10 @@ var CodeBlockEditor = function (_CodeMirrorExt) {
     key: 'refresh',
     value: function refresh() {
       this.cm.refresh();
+      // KW:
+      if (typeof SyntaxHighlighter !== 'undefined') {
+        SyntaxHighlighter.highlight();
+      }
     }
   }]);
 
@@ -29386,6 +29428,7 @@ var CodeBlockPreview = function (_Preview) {
      * refresh preview
      * @memberof CodeBlockPreview
      * @override
+     * KW: Updating to use roadkill-style codeblocks
      */
 
   }, {
@@ -29394,8 +29437,10 @@ var CodeBlockPreview = function (_Preview) {
       var language = this._codeBlockEditor.getLanguage();
       var codeText = this._codeBlockEditor.getEditorCodeText();
 
-      _get(CodeBlockPreview.prototype.__proto__ || Object.getPrototypeOf(CodeBlockPreview.prototype), 'refresh', this).call(this, '```' + language + '\n' + codeText + '\n```');
+      _get(CodeBlockPreview.prototype.__proto__ || Object.getPrototypeOf(CodeBlockPreview.prototype), 'refresh', this).call(this, '[[[code lang=' + language + '|\n' + codeText + '\n]]]');
       this.$el.trigger(EVENT_REQUIRE_SCROLL_SYNC);
+      // KW: using roadkill's syntax highlighter instead of codemirror's default
+      SyntaxHighlighter.highlight();
     }
 
     /**

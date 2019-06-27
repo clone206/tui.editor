@@ -150,6 +150,10 @@ class CodeBlockEditor extends CodeMirrorExt {
    */
   refresh() {
     this.cm.refresh();
+        // KW:
+        if (typeof SyntaxHighlighter !== 'undefined') {
+          SyntaxHighlighter.highlight();
+      }
   }
 }
 

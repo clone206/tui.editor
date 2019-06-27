@@ -5,8 +5,9 @@
  * @modifier NHN Ent. FE Development Lab <dl_javascript@nhnent.com>
  */
 
+    // KW: Allowing the silent param here so code blocks can interrupt paras
 /* eslint-disable */
-module.exports = function code(state, startLine, endLine/*, silent*/) {
+module.exports = function code(state, startLine, endLine, silent) {
     // Added by Junghwan Park
     var FIND_LIST_RX = / {0,3}(?:-|\*|\d\.) /;
     var lines = state.src.split('\n');
@@ -20,6 +21,9 @@ module.exports = function code(state, startLine, endLine/*, silent*/) {
     // Add condition by Junghwan Park
         return false;
     }
+
+    // KW If we're interrupting an element here, don't bother pushing the token
+    if (silent) { return true; }
 
     last = nextLine = startLine + 1;
 

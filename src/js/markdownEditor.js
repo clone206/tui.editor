@@ -72,6 +72,8 @@ class MarkdownEditor extends CodeMirrorExt {
     this.cm.on('change', (cm, cmEvent) => {
       this._emitMarkdownEditorContentChangedEvent();
       this._emitMarkdownEditorChangeEvent(cmEvent);
+          // KW: refreshing roadkill syntax highlighting
+          SyntaxHighlighter.highlight();
     });
 
     this.cm.on('focus', () => {
