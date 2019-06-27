@@ -30171,7 +30171,7 @@ exports.default = Strike;
 
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+    value: true
 });
 
 var _commandManager = __webpack_require__(2);
@@ -30188,44 +30188,44 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  * @ignore
  */
 var Blockquote = _commandManager2.default.command('markdown', /** @lends Blockquote */{
-  name: 'Blockquote',
-  keyMap: ['CTRL+Q', 'META+Q'],
-  /**
-   * command handler
-   * @param {MarkdownEditor} mde MarkdownEditor instance
-   */
-  exec: function exec(mde) {
-    var cm = mde.getEditor();
-    var doc = cm.getDoc();
+    name: 'Blockquote',
+    keyMap: ['CTRL+Q', 'META+Q'],
+    /**
+     * command handler
+     * @param {MarkdownEditor} mde MarkdownEditor instance
+     */
+    exec: function exec(mde) {
+        var cm = mde.getEditor();
+        var doc = cm.getDoc();
 
-    var range = mde.getCurrentRange();
+        var range = mde.getCurrentRange();
 
-    var from = {
-      line: range.from.line,
-      ch: 0
-    };
+        var from = {
+            line: range.from.line,
+            ch: 0
+        };
 
-    var to = {
-      line: range.to.line,
-      ch: doc.getLineHandle(range.to.line).text.length
-    };
+        var to = {
+            line: range.to.line,
+            ch: doc.getLineHandle(range.to.line).text.length
+        };
 
-    var textToModify = doc.getRange(from, to);
-    var textLinesToModify = textToModify.split('\n');
-    var lineLength = textLinesToModify.length;
+        var textToModify = doc.getRange(from, to);
+        var textLinesToModify = textToModify.split('\n');
+        var lineLength = textLinesToModify.length;
 
-    for (var i = 0; i < lineLength; i += 1) {
-      textLinesToModify[i] = '>' + textLinesToModify[i];
+        for (var i = 0; i < lineLength; i += 1) {
+            textLinesToModify[i] = '>' + textLinesToModify[i];
+        }
+
+        doc.replaceRange(textLinesToModify.join('\n'), from, to);
+
+        range.to.ch += 1;
+
+        doc.setCursor(range.to);
+
+        cm.focus();
     }
-
-    doc.replaceRange(textLinesToModify.join('\n'), from, to);
-
-    range.to.ch += 1;
-
-    doc.setCursor(range.to);
-
-    cm.focus();
-  }
 }); /**
     * @fileoverview Implements Blockquote markdown command
     * @author NHN Ent. FE Development Lab <dl_javascript@nhnent.com>
@@ -30493,7 +30493,7 @@ exports.default = HR;
 
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+    value: true
 });
 
 var _commandManager = __webpack_require__(2);
@@ -30523,41 +30523,41 @@ var decodeURIGraceful = _importManager2.default.decodeURIGraceful,
  */
 
 var AddLink = _commandManager2.default.command('markdown', /** @lends AddLink */{
-  name: 'AddLink',
-  /**
-   * command handler for AddLink
-   * @param {MarkdownEditor} mde - MarkdownEditor instance
-   * @param {object} data - data for image
-   */
-  exec: function exec(mde, data) {
-    var cm = mde.getEditor();
-    var doc = cm.getDoc();
+    name: 'AddLink',
+    /**
+     * command handler for AddLink
+     * @param {MarkdownEditor} mde - MarkdownEditor instance
+     * @param {object} data - data for image
+     */
+    exec: function exec(mde, data) {
+        var cm = mde.getEditor();
+        var doc = cm.getDoc();
 
-    var range = mde.getCurrentRange();
+        var range = mde.getCurrentRange();
 
-    var from = {
-      line: range.from.line,
-      ch: range.from.ch
-    };
+        var from = {
+            line: range.from.line,
+            ch: range.from.ch
+        };
 
-    var to = {
-      line: range.to.line,
-      ch: range.to.ch
-    };
+        var to = {
+            line: range.to.line,
+            ch: range.to.ch
+        };
 
-    var linkText = data.linkText,
-        url = data.url;
+        var linkText = data.linkText,
+            url = data.url;
 
-    linkText = decodeURIGraceful(linkText);
-    linkText = escapeMarkdownCharacters(linkText);
-    url = encodeMarkdownCharacters(url);
+        linkText = decodeURIGraceful(linkText);
+        linkText = escapeMarkdownCharacters(linkText);
+        url = encodeMarkdownCharacters(url);
 
-    var replaceText = '[' + linkText + '](' + url + ')';
+        var replaceText = '[' + linkText + '](' + url + ')';
 
-    doc.replaceRange(replaceText, from, to);
+        doc.replaceRange(replaceText, from, to);
 
-    cm.focus();
-  }
+        cm.focus();
+    }
 });
 
 exports.default = AddLink;
@@ -30570,7 +30570,7 @@ exports.default = AddLink;
 
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+    value: true
 });
 
 var _commandManager = __webpack_require__(2);
@@ -30600,40 +30600,40 @@ var decodeURIGraceful = _importManager2.default.decodeURIGraceful,
  */
 
 var AddImage = _commandManager2.default.command('markdown', /** @lends AddImage */{
-  name: 'AddImage',
-  /**
-   * Command Handler
-   * @param {MarkdownEditor} mde MarkdownEditor instance
-   * @param {object} data data for image
-   */
-  exec: function exec(mde, data) {
-    var cm = mde.getEditor();
-    var doc = cm.getDoc();
+    name: 'AddImage',
+    /**
+     * Command Handler
+     * @param {MarkdownEditor} mde MarkdownEditor instance
+     * @param {object} data data for image
+     */
+    exec: function exec(mde, data) {
+        var cm = mde.getEditor();
+        var doc = cm.getDoc();
 
-    var range = mde.getCurrentRange();
+        var range = mde.getCurrentRange();
 
-    var from = {
-      line: range.from.line,
-      ch: range.from.ch
-    };
+        var from = {
+            line: range.from.line,
+            ch: range.from.ch
+        };
 
-    var to = {
-      line: range.to.line,
-      ch: range.to.ch
-    };
+        var to = {
+            line: range.to.line,
+            ch: range.to.ch
+        };
 
-    var altText = data.altText,
-        imageUrl = data.imageUrl;
+        var altText = data.altText,
+            imageUrl = data.imageUrl;
 
-    altText = decodeURIGraceful(altText);
-    altText = escapeMarkdownCharacters(altText);
-    imageUrl = encodeMarkdownCharacters(imageUrl);
-    var replaceText = '![' + altText + '](' + imageUrl + ')';
+        altText = decodeURIGraceful(altText);
+        altText = escapeMarkdownCharacters(altText);
+        imageUrl = encodeMarkdownCharacters(imageUrl);
+        var replaceText = '![' + altText + '](' + imageUrl + ')';
 
-    doc.replaceRange(replaceText, from, to, '+addImage');
+        doc.replaceRange(replaceText, from, to, '+addImage');
 
-    cm.focus();
-  }
+        cm.focus();
+    }
 });
 
 exports.default = AddImage;
@@ -33032,7 +33032,7 @@ exports.default = TableRemove;
 
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+      value: true
 });
 
 var _jquery = __webpack_require__(0);
@@ -33057,45 +33057,45 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  * @author NHN Ent. FE Development Lab <dl_javascript@nhnent.com>
  */
 var Indent = _commandManager2.default.command('wysiwyg', /** @lends Indent */{
-  name: 'Indent',
-  /**
-   * Command Handler
-   * @param {WysiwygEditor} wwe wysiwygEditor instance
-   */
-  exec: function exec(wwe) {
-    var listManager = wwe.componentManager.getManager('list');
-    var range = wwe.getEditor().getSelection();
-    var $node = (0, _jquery2.default)(range.startContainer).closest('li');
-    var prevClasses = void 0,
-        nodeClasses = void 0,
-        nextClasses = void 0;
+      name: 'Indent',
+      /**
+       * Command Handler
+       * @param {WysiwygEditor} wwe wysiwygEditor instance
+       */
+      exec: function exec(wwe) {
+            var listManager = wwe.componentManager.getManager('list');
+            var range = wwe.getEditor().getSelection();
+            var $node = (0, _jquery2.default)(range.startContainer).closest('li');
+            var prevClasses = void 0,
+                nodeClasses = void 0,
+                nextClasses = void 0;
 
-    var $prev = $node.prev();
+            var $prev = $node.prev();
 
-    if ($prev.length && $node.length) {
-      var $next = $node.find('li').eq(0);
+            if ($prev.length && $node.length) {
+                  var $next = $node.find('li').eq(0);
 
-      wwe.getEditor().saveUndoState();
+                  wwe.getEditor().saveUndoState();
 
-      nodeClasses = $node.attr('class');
-      prevClasses = $prev.attr('class');
-      nextClasses = $next.attr('class');
+                  nodeClasses = $node.attr('class');
+                  prevClasses = $prev.attr('class');
+                  nextClasses = $next.attr('class');
 
-      $node.removeAttr('class');
-      $prev.removeAttr('class');
+                  $node.removeAttr('class');
+                  $prev.removeAttr('class');
 
-      if ($next.length && !$next.children('div').length) {
-        $next.removeAttr('class');
+                  if ($next.length && !$next.children('div').length) {
+                        $next.removeAttr('class');
+                  }
+
+                  wwe.getEditor().increaseListLevel();
+                  listManager.mergeList($node.get(0));
+
+                  $node.attr('class', nodeClasses);
+                  $prev.attr('class', prevClasses);
+                  $next.attr('class', nextClasses);
+            }
       }
-
-      wwe.getEditor().increaseListLevel();
-      listManager.mergeList($node.get(0));
-
-      $node.attr('class', nodeClasses);
-      $prev.attr('class', prevClasses);
-      $next.attr('class', nextClasses);
-    }
-  }
 });
 
 exports.default = Indent;
