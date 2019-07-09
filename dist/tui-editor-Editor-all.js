@@ -2886,7 +2886,7 @@ var ImportManager = function () {
   }, {
     key: 'encodeMarkdownCharacters',
     value: function encodeMarkdownCharacters(text) {
-      return text.replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\[/g, '%5B').replace(/\]/g, '%5D').replace(/</g, '%3C').replace(/>/g, '%3E');
+      return text.replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\[/g, '%5B').replace(/\]/g, '%5D').replace(/</g, '%3C').replace(/>/g, '%3E').replace(/ /g, '%20');
     }
 
     /**

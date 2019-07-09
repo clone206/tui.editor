@@ -61,7 +61,8 @@ class ImportManager {
       .replace(/\[/g, '%5B')
       .replace(/\]/g, '%5D')
       .replace(/</g, '%3C')
-      .replace(/>/g, '%3E');
+      .replace(/>/g, '%3E')
+      .replace(/ /g, '%20');
   }
 
   /**
